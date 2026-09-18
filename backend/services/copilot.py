@@ -1,10 +1,10 @@
 """
-Gemini AI Copilot service for ContextIQ.
-Generates actionable insights based on deterministic risk scores and external data.
+AI Copilot service for ContextIQ.
+Generates actionable insights based on deterministic risk scores and external data using Groq.
 """
 
 import os
-import google.generativeai as genai
+from groq import Groq
 
 class CopilotError(RuntimeError):
     """Raised when the AI copilot fails to generate a response."""
@@ -15,14 +15,12 @@ def generate_intervention_strategy(
     weather_summary: dict
 ) -> str:
     """
-    Calls Gemini to recommend an intervention strategy based on the operation's context.
+    Calls Llama 3 via Groq to recommend an intervention strategy based on the context.
     """
-    api_key = os.environ.get("GEMINI_API_KEY")
+    api_key = os.environ.get("GROQ_API_KEY")
     if not api_key:
-        raise CopilotError("GEMINI_API_KEY environment variable is missing.")
+        raise CopilotError("GROQ_API_KEY environment variable is missing.")
 
-    genai.configure(api_key=api_key)
-    
     prompt = (
         f"You are an AI Copilot for an operational risk platform.\n"
         f"Operation: {operation_title}\n"
@@ -32,8 +30,16 @@ def generate_intervention_strategy(
     )
 
     try:
-        model = genai.GenerativeModel("gemini-1.5-flash")
-        response = model.generate_content(prompt)
-        return response.text
+        client = Groq(api_key=api_key)
+        chat_completion = client.chat.completions.create(
+            messages=[
+                {
+                    "role": "user",
+                    "content": prompt,
+                }
+            ],
+            model="openai/gpt-oss-20b",
+        )
+        return chat_completion.choices[0].message.content
     except Exception as exc:
-        raise CopilotError(f"Generative AI request failed: {exc}") from exc
+        raise CopilotError(f"Groq API request failed: {exc}") from exc

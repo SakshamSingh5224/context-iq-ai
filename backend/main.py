@@ -38,6 +38,9 @@ def get_db() -> Generator[Session, None, None]:
 
 app = FastAPI(title="ContextIQ AI API", version="0.1.0")
 
+@app.get("/")
+def read_root():
+    return {"message": "ContextIQ AI API is operational. Visit /docs for OpenAPI documentation."}
 
 @app.post(
     "/api/v1/operations",
