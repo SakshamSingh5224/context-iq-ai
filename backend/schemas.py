@@ -7,7 +7,7 @@ from typing import Optional
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
-from models import OperationPriority, OperationStatus
+from models import OperationPriority, OperationStatus, RiskLevel
 
 
 class OperationBase(BaseModel):
@@ -48,3 +48,14 @@ class OperationResponse(OperationBase):
     id: str
     created_at: datetime
     updated_at: datetime
+
+
+class RiskEventResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: str
+    operation_id: str
+    risk_level: RiskLevel
+    risk_score: float
+    contributing_factors: Optional[str] = None
+    created_at: datetime

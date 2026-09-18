@@ -57,3 +57,22 @@ def test_create_operation_success():
     assert body["longitude"] == pytest.approx(payload["longitude"])
     assert "id" in body
     assert "created_at" in body
+
+
+def test_assess_saves_risk_event_and_lists_it():
+    created = client.post(
+        "/api/v1/operations",
+        json={"title": "Check generator", "priority": "urgent"},
+    ).json()
+
+    assess = client.post(f"/api/v1/operations/{created['id']}/assess")
+    assert assess.status_code == 200
+    assert assess.json()["risk_assessment"]["score"] > 0
+
+    events = client.get("/api/v1/risk-events")
+    assert events.status_code == 200
+    assert any(e["operation_id"] == created["id"] for e in events.json())
+
+    history = client.get(f"/api/v1/operations/{created['id']}/risk-history")
+    assert history.status_code == 200
+    assert len(history.json()) == 1

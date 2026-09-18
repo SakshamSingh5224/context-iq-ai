@@ -1,3 +1,4 @@
+alembic==1.20.0
 annotated-doc==0.0.5
 annotated-types==0.8.0
 anyio==4.14.2
@@ -25,6 +26,8 @@ httplib2==0.32.0
 httpx==0.28.1
 idna==3.19
 iniconfig==2.3.0
+Mako==1.4.1
+MarkupSafe==3.0.3
 packaging==26.3
 pluggy==1.6.0
 proto-plus==1.28.2
