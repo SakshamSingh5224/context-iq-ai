@@ -1,5 +1,5 @@
 # ContextIQ AI
-
+**Live demo:** https://context-iq-ai.vercel.app  |  **API docs:** https://context-iq-api.onrender.com/docs
 An operational risk and decision-intelligence platform. ContextIQ AI takes an operation (title, priority, location), combines it with live weather data, computes a **deterministic risk score**, and asks an **LLM copilot** (Groq) for a concise 3-step intervention strategy. Every assessment is stored, so you get a running risk history.
 
 **Stack:** FastAPI · SQLAlchemy + SQLite · React 18 + Vite + Tailwind CSS 4 · Recharts · Groq · Open-Meteo · Docker · Render · Vercel
