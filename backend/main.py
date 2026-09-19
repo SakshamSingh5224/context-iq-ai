@@ -48,20 +48,25 @@ def get_db() -> Generator[Session, None, None]:
 
 app = FastAPI(title="ContextIQ AI API", version="0.1.0")
 
-# --- CORS (Phase 4: local origins only; Phase 5 makes this env-driven) ---
+# --- CORS: origins come from env so the Vercel domain needs no code change ---
+ALLOWED_ORIGINS = [
+    o.strip()
+    for o in os.getenv(
+        "ALLOWED_ORIGINS",
+        "http://localhost:3000,http://127.0.0.1:3000,http://localhost:5173,http://127.0.0.1:5173",
+    ).split(",")
+    if o.strip()
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:3000",
-        "http://127.0.0.1:3000",
-        "http://localhost:5173",
-        "http://127.0.0.1:5173",
-    ],
+    allow_origins=ALLOWED_ORIGINS,
+    # Optional: e.g. https://context-iq-ai.*\.vercel\.app to allow Vercel preview URLs
+    allow_origin_regex=os.getenv("ALLOWED_ORIGIN_REGEX") or None,
     allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
 
 @app.get("/")
 def read_root():
